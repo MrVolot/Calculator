@@ -15,6 +15,8 @@ double Storage::popNumber() {
 }
 
 char Storage::popSymbol() {
+	if (symbols.empty())
+		return '@';
 	auto tmp{ symbols.top() };
 	symbols.pop();
 	return tmp;

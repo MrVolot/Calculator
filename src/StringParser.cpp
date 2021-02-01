@@ -21,38 +21,59 @@ bool Parser::isDigit(char num) {
 	return false;
 }
 bool Parser::checkIfCorrect() {
-	if (text[0] != '-' &&( text[0] < '0' || text[0] > '9'))
+	if (text_[0] != '-' && (!isDigit(text_[0]))) 
 		return false;
-	//4+*20+45+76-190
-	for (int i{ 0 }; i < text.size()-1; i++) {
-		if (isSymbol(text[i])&& (!isDigit(text[i + 1] || text[i + 1] != '-'))) {
-			return false;
+	if (text_[0] == '-' && (text_[1] != '-' && !isDigit(text_[1])))
+		return false;
+	for (int i = 0; i <= text_.size()-1; i++) {
+		if (isSymbol(text_[i])) {
+			if (!isDigit(text_[i + 1]) && text_[i + 1] != '-') {
+				return false;
+			}
 		}
-		if (!isSymbol(text[i])) {
-			if (!isDigit(text[i])) {
+		if (!isSymbol(text_[i])) {
+			if (!isDigit(text_[i])) {
 				return false;
 			}
 		}
 	}
 	return true;
 }
-Parser::Parser(std::string text_) :text{ text_ } {}
+Parser::Parser(std::string text__) :text_{ text__ } {}
 
 void Parser::parseString() {
 	std::string tmpNum;
-	for (int i{ 0 }; i < text.size(); i++) {
-		if (isDigit(text[i])) {
-			tmpNum += text[i];
+	int i{};
+	if (text_[0] == '-') {	
+		tmpNum += text_[0];
+		i++;
+	}
+	for (i; i <= text_.size()-1; i++) {
+		if (isDigit(text_[i]) || (isSymbol(text_[i - 1]) && text_[i] == '-')) {
+			tmpNum += text_[i];
 			continue;
 		}
 		else {
-			numbers.push_back(std::stod(tmpNum));
-			tmpNum.erase();
+			if (!tmpNum.empty()) {
+				numbers_.push_back(std::stod(tmpNum));
+				tmpNum.erase();
+			}
 		}
-		if(isSymbol(text[i])){
-			symbols.push_back(text[i]);
+		if(isSymbol(text_[i])){
+			symbols_.push_back(text_[i]);
 		}
 	}
+	if (!tmpNum.empty()) {
+		numbers_.push_back(std::stod(tmpNum));
+	}
+	std::reverse(numbers_.begin(), numbers_.end());
+	std::reverse(symbols_.begin(), symbols_.end());
 }
 
+std::vector<double> Parser::numbers() {
+	return numbers_;
+}
 
+std::vector<char> Parser::symbols() {
+	return symbols_;
+}
