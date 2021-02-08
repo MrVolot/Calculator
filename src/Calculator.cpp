@@ -8,8 +8,10 @@ void Calculator::fill(std::vector<double> numString, std::vector<char> symbolStr
 		stor.pushSymbol(symbol);
 	}
 }
-//20/3+5
+//50/300*(3+4*5)*10
 double Calculator::calculate() {
+	std::stack<double> tmpNum;
+	std::stack<char> tmpSym;
 	while (!stor.isEmptySymbols()) {
 		auto tmpSymbolOne{ stor.popSymbol() };
 		auto tmpSymbolTwo{ stor.popSymbol() };

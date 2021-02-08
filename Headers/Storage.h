@@ -1,9 +1,10 @@
 #pragma once
 #include <stack>
+#include "Stack.h"
 
 class Storage {
-	std::stack<double> numbers;
-	std::stack<char> symbols;
+	Stack<double> numbers;
+	Stack<char> symbols;
 public:
 	void pushNumber(double num);
 	void pushSymbol(char sym);
