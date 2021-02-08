@@ -1,5 +1,6 @@
 #include "StringParser.h"
 #include <iostream>
+#include <regex>
 
 bool Parser::isSymbol(char key) {
 	switch (key) {
@@ -11,6 +12,10 @@ bool Parser::isSymbol(char key) {
 		return true;
 	case '/':
 		return true;
+	case '(':
+		return true;
+	case ')':
+		return true;
 	}
 	return false;
 }
@@ -21,13 +26,22 @@ bool Parser::isDigit(char num) {
 	return false;
 }
 bool Parser::checkIfCorrect() {
-	if (text_[0] != '-' && (!isDigit(text_[0]))) 
+	if (text_[0] != '-'&&text_[0]!='(' && (!isDigit(text_[0]))) 
 		return false;
 	if (text_[0] == '-' && (text_[1] != '-' && !isDigit(text_[1])))
 		return false;
-	for (int i = 0; i <= text_.size()-1; i++) {
+	int countC{};
+	int countO{};
+	for (int i = 0; i <= text_.size() - 1; i++) {
+		if (text_[i] == '(')
+			countO++;
+		if (text_[i] == ')')
+			countC++;
+		if (text_[i + 1] == '\0' && text_[i] == ')') {
+			break;
+		}
 		if (isSymbol(text_[i])) {
-			if (!isDigit(text_[i + 1]) && text_[i + 1] != '-') {
+			if (!isDigit(text_[i + 1]) && !isSymbol(text_[i + 1]) && (text_[i+1] != '(' )) {
 				return false;
 			}
 		}
@@ -37,6 +51,9 @@ bool Parser::checkIfCorrect() {
 			}
 		}
 	}
+	if (countC != countO) {
+		return false;
+	}
 	return true;
 }
 Parser::Parser(std::string text__) :text_{ text__ } {}
@@ -45,11 +62,11 @@ void Parser::parseString() {
 	std::string tmpNum;
 	int i{};
 	if (text_[0] == '-') {	
-		tmpNum += text_[0];
+		tmpNum += text_[0]; 
 		i++;
 	}
 	for (i; i <= text_.size()-1; i++) {
-		if (isDigit(text_[i]) || (isSymbol(text_[i - 1]) && text_[i] == '-')) {
+		if (isDigit(text_[i]) || (i != 0 && isSymbol(text_[i - 1]) && text_[i] == '-')) {
 			tmpNum += text_[i];
 			continue;
 		}
